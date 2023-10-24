@@ -1,0 +1,1 @@
+tokens_revogados = set()
