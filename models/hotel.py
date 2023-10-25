@@ -32,6 +32,18 @@ class HotelModel(banco.Model):
             return hotel
         return None
     
+    @classmethod
+    def find_by_params(cls, cidade, estrelas_min, estrelas_max, diaria_min, diaria_max, limit, offset):
+        query = cls.query
+        if cidade:
+            query = query.filter_by(cidade=cidade)
+        query = query.filter(cls.estrelas >= estrelas_min,
+                             cls.estrelas <= estrelas_max,
+                             cls.diaria >= diaria_min,
+                             cls.diaria <= diaria_max)
+        query = query.limit(limit).offset(offset)
+        return query.all()
+    
     def save_hotel(self):
         banco.session.add(self)
         banco.session.commit()

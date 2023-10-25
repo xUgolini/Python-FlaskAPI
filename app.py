@@ -23,7 +23,7 @@ def verifica_blacklist(self, token):
     return token['jti'] in tokens_revogados
 
 @jwt.revoked_token_loader
-def token_de_acesso_invalidado(jwt_header, jwt_payload):
+def token_de_acesso_invalidado(jwt_header, jwt_data):
     return jsonify({'message': 'Você foi deslogado'}), 401 #UNAUTHORIZED
 
 api.add_resource(Hoteis, '/hoteis')
