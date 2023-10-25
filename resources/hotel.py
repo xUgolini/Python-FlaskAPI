@@ -1,5 +1,6 @@
 from flask_restful import Resource, reqparse
 from models.hotel import HotelModel
+from models.site import SiteModel
 from flask_jwt_extended import jwt_required
 class Hoteis(Resource):
     def get(self):
@@ -32,6 +33,7 @@ class Hotel(Resource):
     argumentos.add_argument('estrelas', type=float, required=True, help="O campo deve ser preenchido.")
     argumentos.add_argument('diaria')
     argumentos.add_argument('cidade')
+    argumentos.add_argument('site_id', type=int, required=True, help="O campo deve ser preenchido.")
 
     def get(self, hotel_id):
         hotel = HotelModel.find_hotel(hotel_id)
@@ -46,6 +48,9 @@ class Hotel(Resource):
             return {"message": "Hotel id '{}' já existe.".format(hotel_id)}, 400
         dados = Hotel.argumentos.parse_args()
         hotel = HotelModel(hotel_id, **dados)
+
+        if not SiteModel.find_by_id(dados.get('site_id')):
+            return {'message': 'O hotel tem que estar associado à um site válido.'}, 400 # bad request
         try:
             hotel.save_hotel()
         except:
